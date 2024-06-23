@@ -28,8 +28,14 @@ printToMonitor("[x] Loading main.lua")
 
 printToMonitor("[ ] Finding drives with recipes")
 
+local num_drives = 0
+
 local drives = peripheral.find("drive", function(name, object)
-    return object.hasData()
+    if not object.hasData then
+        return false
+    end
+    num_drives = num_drives + 1
+    return true
 end)
 
 if not drives then
@@ -37,4 +43,4 @@ if not drives then
     return
 end
 
-printToMonitor("[x] Found " .. #drives .. " drives with recipes")
+printToMonitor("[x] Found " .. num_drives .. " drives with recipes")
