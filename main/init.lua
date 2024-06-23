@@ -34,23 +34,28 @@ printToMonitor("[ ] Loading main.lua")
 -- }}}
 
 -- Recipe handlers {{{
-printToMonitor("[ ] Finding recipe handlers")
+local function findRecipeHandlers()
+    printToMonitor("[ ] Finding recipe handlers")
 
-local handlers = {}
-local num_handlers = 0
+    local handlers = {}
+    local num_handlers = 0
 
-local files = fs.list(fs.combine(root, "recipe_handlers"))
+    local files = fs.list(fs.combine(root, "recipe_handlers"))
 
-for _, file in ipairs(files) do
-    local name = file:match("(.+).lua")
-    if name then
-        num_handlers = num_handlers + 1
-        printToMonitor("    Found handler \"" .. name .. "\"")
-        handlers[name] = dofile(fs.combine(root, "recipe_handlers", file))
+    for _, file in ipairs(files) do
+        local name = file:match("(.+).lua")
+        if name then
+            num_handlers = num_handlers + 1
+            printToMonitor("    Found handler \"" .. name .. "\"")
+            handlers[name] = dofile(fs.combine(root, "recipe_handlers", file))
+        end
     end
+
+    printToMonitor("[x] Found " .. num_handlers .. " recipe handlers")
+
+    return handlers
 end
 
-printToMonitor("[x] Found " .. num_handlers .. " recipe handlers")
 -- }}}
 
 -- Drives {{{
@@ -80,6 +85,7 @@ local function findDrivesWithRecipes()
 end
 -- }}}
 
+local handlers = findRecipeHandlers()
 local drives = findDrivesWithRecipes()
 
 -- Main loop {{{
