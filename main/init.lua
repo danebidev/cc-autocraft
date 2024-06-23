@@ -57,12 +57,11 @@ for _, file in ipairs(files) do
     local name = file:match("(.+).lua")
     if name then
         num_handlers = num_handlers + 1
-        printToMonitor("[ ] Found handler " .. name)
+        printToMonitor("[x] Found handler " .. name)
         handlers[name] = dofile(fs.combine(root, "recipe_handlers", file))
     end
 end
 
-deleteLastLine()
 printToMonitor("[x] Found " .. num_handlers .. " recipe handlers")
 
 printToMonitor("[ ] Finding drives with recipes")
