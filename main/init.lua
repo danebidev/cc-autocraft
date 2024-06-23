@@ -49,17 +49,21 @@ printToMonitor("[x] Loading main.lua")
 printToMonitor("[ ] Finding recipe handlers")
 
 local handlers = {}
+local num_handlers = 0
 
 local files = fs.list(fs.combine(root, "recipe_handlers"))
 
 for _, file in ipairs(files) do
     local name = file:match("(.+).lua")
     if name then
+        num_handlers = num_handlers + 1
+        printToMonitor("[ ] Found handler " .. name)
         handlers[name] = dofile(fs.combine(root, "recipe_handlers", file))
     end
 end
 
-printToMonitor("[x] Found " .. #handlers .. " recipe handlers")
+deleteLastLine()
+printToMonitor("[x] Found " .. num_handlers .. " recipe handlers")
 
 printToMonitor("[ ] Finding drives with recipes")
 
