@@ -7,9 +7,15 @@ end
 monitor.clear()
 monitor.setCursorPos(1, 1)
 
+local root = fs.combine(shell.getRunningProgram(), "../../")
+
 local lines = {}
 
 local function printToMonitor(text)
+    if not monitor then
+        print(text)
+    end
+
     table.insert(lines, text)
 
     if #lines > monitor.getSize() - 1 then
@@ -25,6 +31,10 @@ local function printToMonitor(text)
 end
 
 local function deleteLastLine()
+    if not monitor then
+        return
+    end
+
     table.remove(lines, #lines)
     monitor.clear()
     monitor.setCursorPos(1, 1)
@@ -40,16 +50,16 @@ printToMonitor("[ ] Finding recipe handlers")
 
 local handlers = {}
 
-local files = fs.list("../recipe_handlers")
+local files = fs.list(fs.combine(root, "recipe_handlers"))
 
 for _, file in ipairs(files) do
     local name = file:match("(.+).lua")
     if name then
-        handlers[name] = dofile("../recipe_handlers/" .. file)
+        handlers[name] = dofile(fs.combine(root, "recipe_handlers", file))
     end
 end
 
-printToMonitor("[x] Found " .. #files .. " recipe handlers")
+printToMonitor("[x] Found " .. #handlers .. " recipe handlers")
 
 printToMonitor("[ ] Finding drives with recipes")
 
