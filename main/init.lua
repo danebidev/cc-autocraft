@@ -60,7 +60,7 @@ local function findDrivesWithRecipes()
     local num_drives = 0
 
     local drives = peripheral.find("drive", function(name, drive)
-        if not drive.hasData() or not fs.exists(fs.combine(name, "recipes")) then
+        if not drive.hasData() or not fs.exists(fs.combine(drive.getMountPath(), "recipes")) then
             return false
         end
 
