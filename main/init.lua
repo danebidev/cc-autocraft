@@ -13,8 +13,10 @@ local root = fs.combine(shell.getRunningProgram(), "../../")
 local lines = {}
 
 local function printToMonitor(text)
+    print(text)
+
     if not monitor then
-        print(text)
+        return
     end
 
     table.insert(lines, text)
@@ -30,6 +32,7 @@ local function printToMonitor(text)
         monitor.write(line)
     end
 end
+
 printToMonitor("[ ] Loading main.lua")
 -- }}}
 
