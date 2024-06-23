@@ -38,27 +38,14 @@ printToMonitor("[x] Loading main.lua")
 
 printToMonitor("[ ] Finding recipe handlers")
 
+local handlers = {}
 
-local recipe_handler_folder = fs.combine(shell.getRunningProgram(), "../recipe_handlers")
-
-if not fs.exists(recipe_handler_folder) or not fs.isDir(recipe_handler_folder) then
-    deleteLastLine()
-    printToMonitor("[x] No recipe handlers found")
-    return
-end
-
-local recipe_handlers = {}
-
-local files = fs.list(recipe_handler_folder)
+local files = fs.list("../recipe_handlers")
 
 for _, file in ipairs(files) do
-    local path = fs.combine(recipe_handler_folder, file)
-    if fs.isDir(path) then
-        printToMonitor("[ ] Loading recipe handler " .. file)
-        local handler = dofile(fs.combine(path, "handler.lua"))
-        recipe_handlers[file] = handler
-        deleteLastLine()
-        printToMonitor("[x] Loaded recipe handler " .. file)
+    local name = file:match("(.+).lua")
+    if name then
+        handlers[name] = dofile("../recipe_handlers/" .. file)
     end
 end
 
