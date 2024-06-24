@@ -12,7 +12,9 @@ local function run()
         local command = lib.split(message, " ")
 
         if command[1] == "craft" then
-            List.pushright(CalcQueue, { name = command[2], quant = tonumber(command[3]) or 1 })
+            local quant = tonumber(command[3]) or 1
+            List.pushright(CalcQueue, { name = command[2], quant = quant })
+            rednet.send(sender, "Added " .. quant .. " " .. command[2] .. " to the queue", "autocrafting")
         end
     end
 end
