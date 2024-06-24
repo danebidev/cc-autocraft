@@ -88,14 +88,15 @@ local function loadRecipes()
 						for _, file in ipairs(files) do
 							local name = file:match("(.+).lua")
 							if name then
+								name = namespace .. ":" .. name
 								recipes[name] = dofile(fs.combine(path, handler, namespace, file))
 
 								-- Attaching this data here allows us to avoid writing it in the recipes themselves, saving space
-								recipes[name].name = namespace .. ":" .. name
+								recipes[name].name = name
 								recipes[name].handler = handler
 								num_recipes = num_recipes + 1
 
-								lib.printToMonitor("    Loaded recipe " .. name)
+								lib.printToMonitor("    Loaded recipe " .. recipes[name])
 							end
 						end
 					else

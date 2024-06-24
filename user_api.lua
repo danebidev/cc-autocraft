@@ -4,7 +4,7 @@ local function run()
 	peripheral.find("modem", rednet.open)
 
 	while true do
-		local sender, message = rednet.receive("recipe")
+		local sender, message = rednet.receive()
 
 		local command = lib.split(message, " ")
 
