@@ -96,7 +96,7 @@ local function loadRecipes()
 								recipes[name].handler = handler
 								num_recipes = num_recipes + 1
 
-								lib.printToMonitor("    Loaded recipe " .. recipes[name])
+								lib.printToMonitor("    Loaded recipe " .. name)
 							end
 						end
 					else

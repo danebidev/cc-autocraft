@@ -1,6 +1,7 @@
 local lib = require("lib")
 
 local function run()
+	lib.printToMonitor("[x] Started user API")
 	peripheral.find("modem", rednet.open)
 
 	while true do
