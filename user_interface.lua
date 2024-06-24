@@ -1,17 +1,17 @@
-local root = fs.combine(shell.getRunningProgram(), "../")
-local lib = require("lib")
+-- local root = fs.combine(shell.getRunningProgram(), "../")
+-- local lib = require("lib")
 
 peripheral.find("modem", rednet.open)
 
 while true do
-	print(">> ")
+	io.write(">> ")
 	local command = read()
 
 	if command == "exit" then
 		break
 	end
 
-	rednet.broadcast(command)
+	rednet.broadcast(command, "auto_crafting")
 
 	local _, message = rednet.receive()
 	print(message)
