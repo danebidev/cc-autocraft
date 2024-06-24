@@ -67,15 +67,17 @@ local function findDrivesWithRecipes()
 
     local num_drives = 0
 
-    local drives = peripheral.find("drive", function(name, drive)
-        if not drive.hasData() or not fs.exists(fs.combine(drive.getMountPath(), "recipes")) then
-            return false
-        end
+    local drives = {
+        peripheral.find("drive", function(name, drive)
+            if not drive.hasData() or not fs.exists(fs.combine(drive.getMountPath(), "recipes")) then
+                return false
+            end
 
-        printToMonitor("    Found drive " .. name .. " with recipes")
-        num_drives = num_drives + 1
-        return true
-    end)
+            printToMonitor("    Found drive " .. name .. " with recipes")
+            num_drives = num_drives + 1
+            return true
+        end)
+    }
 
     if not drives then
         printToMonitor("[x] No drives found with recipes")
@@ -96,7 +98,9 @@ local function loadRecipes()
     local drives = findDrivesWithRecipes()
 
     -- Load from all drives that have a recipes directory
-    for name, drive in pairs(drives) do
+    for _, drive in ipairs(drives) do
+        --- @cast drive ccTweaked.peripherals.Drive
+        printToMonitor("Loading recipes from drive " .. drive.getId())
         local path = fs.combine(drive.getMountPath(), "recipes")
         local handlers = fs.list(path)
 
