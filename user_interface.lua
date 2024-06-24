@@ -1,18 +1,18 @@
 local root = fs.combine(shell.getRunningProgram(), "../")
-local lib = dofile(fs.combine(root, "lib.lua"))
+local lib = require("lib")
 
 peripheral.find("modem", rednet.open)
 
 while true do
-    print(">> ")
-    local command = read()
+	print(">> ")
+	local command = read()
 
-    if command == "exit" then
-        break
-    end
+	if command == "exit" then
+		break
+	end
 
-    rednet.broadcast(command)
+	rednet.broadcast(command)
 
-    local _, message = rednet.receive()
-    print(message)
+	local _, message = rednet.receive()
+	print(message)
 end

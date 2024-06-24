@@ -1,22 +1,21 @@
-local root = fs.combine(shell.getRunningProgram(), "../../")
-local lib = dofile(fs.combine(root, "lib.lua"))
+local lib = require("lib")
 
 local function run()
-    peripheral.find("modem", rednet.open)
+	peripheral.find("modem", rednet.open)
 
-    while true do
-        local sender, message = rednet.receive("recipe")
+	while true do
+		local sender, message = rednet.receive("recipe")
 
-        local command = lib.split(message, " ")
+		local command = lib.split(message, " ")
 
-        if command[1] == "get_raw" then
-            if not Data.recipes[command[2]] then
-                rednet.send(sender, "Recipe not found")
-            else
-                rednet.send(sender, textutils.serialize(Data.recipes[command[2]]))
-            end
-        end
-    end
+		if command[1] == "get_raw" then
+			if not Data.recipes[command[2]] then
+				rednet.send(sender, "Recipe not found")
+			else
+				rednet.send(sender, textutils.serialize(Data.recipes[command[2]]))
+			end
+		end
+	end
 end
 
 return { run }
