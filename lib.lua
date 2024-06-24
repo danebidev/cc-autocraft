@@ -1,3 +1,6 @@
+local monitor = peripheral.find("monitor") --[[@as ccTweaked.peripherals.Monitor]]
+lines = {}
+
 local function printToMonitor(text, monitor)
     print(text)
 
@@ -5,15 +8,15 @@ local function printToMonitor(text, monitor)
         return
     end
 
-    table.insert(Lines, text)
+    table.insert(lines, text)
 
-    if #Lines > monitor.getSize() - 1 then
-        table.remove(Lines, 1)
+    if #lines > monitor.getSize() - 1 then
+        table.remove(lines, 1)
     end
 
     monitor.clear()
     monitor.setCursorPos(1, 1)
-    for i, Line in ipairs(Lines) do
+    for i, line in ipairs(lines) do
         monitor.setCursorPos(1, i)
         monitor.write(line)
     end
@@ -30,4 +33,4 @@ local function split(inputstr, sep)
     return t
 end
 
-return { printToMonitor, split }
+return { printToMonitor = printToMonitor, split = split }
