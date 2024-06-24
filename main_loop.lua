@@ -24,12 +24,12 @@ local function calc(item, quant)
 
     lib.printToMonitor("Crafting " .. to_craft .. " x " .. recipe.qnt .. " of " .. item .. " (" .. recipe.handler .. ")")
 
-    for _, item in ipairs(recipe.rc) do
-        if not item == "" then
-            if not string.find(item, ":") then
-                List.pushright(CalcQueue, { name = recipe.namespace .. ":" .. item, quant = to_craft })
+    for _, it in ipairs(recipe.rc) do
+        if not it == "" then
+            if not string.find(it, ":") then
+                List.pushright(CalcQueue, { name = recipe.namespace .. ":" .. it, quant = to_craft })
             else
-                List.pushright(CalcQueue, { name = item, quant = to_craft })
+                List.pushright(CalcQueue, { name = it, quant = to_craft })
             end
         end
     end
@@ -38,6 +38,8 @@ end
 local function start()
     while true do
         local item = List.popleft(CalcQueue)
+        -- Serialize CalcQueue and print it
+        lib.printToMonitor("CalcQueue: " .. textutils.serialize(CalcQueue))
         if item then
             calc(item.name, item.quant)
         end
