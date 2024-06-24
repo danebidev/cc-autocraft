@@ -30,7 +30,8 @@ local function printToMonitor(text)
 
     table.insert(lines, text)
 
-    if #lines > monitor.getSize() - 1 then
+    local _, height = monitor.getSize()
+    if #lines > height - 1 then
         table.remove(lines, 1)
     end
 

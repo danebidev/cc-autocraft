@@ -38,11 +38,10 @@ end
 local function start()
     while true do
         local item = List.popleft(CalcQueue)
-        -- Serialize CalcQueue and print it
-        lib.printToMonitor("CalcQueue: " .. textutils.serialize(CalcQueue))
         if item then
             calc(item.name, item.quant)
         end
+
 
         os.sleep(0.5)
     end
