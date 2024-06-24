@@ -7,12 +7,19 @@ while true do
 	io.write(">> ")
 	local command = read()
 
+	local id = rednet.lookup("autocrafting", "main")
+
+	if not id then
+		print("No server found")
+		break
+	end
+
 	if command == "exit" then
 		break
 	end
 
-	rednet.broadcast(command, "auto_crafting")
+	rednet.send(id, command, "autocrafting")
 
-	local _, message = rednet.receive()
+	local _, message = rednet.receive("autocrafting")
 	print(message)
 end
