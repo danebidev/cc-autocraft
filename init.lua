@@ -120,4 +120,4 @@ Data = {}
 Data.handlers = findRecipeHandlers()
 Data.recipes = loadRecipes()
 
-parallel.all(require("user_api").run)
+parallel.waitForAll(require("user_api").run)

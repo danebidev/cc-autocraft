@@ -18,4 +18,4 @@ local function run()
 	end
 end
 
-return { run }
+return { run = run }
