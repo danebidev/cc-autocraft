@@ -35,7 +35,7 @@ local function start()
     while true do
         local item = List.popleft(CalcQueue)
         if item then
-            calc(item)
+            calc(item.name, item.quant)
         end
 
         os.sleep(0.5)
