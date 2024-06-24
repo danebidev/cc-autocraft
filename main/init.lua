@@ -88,46 +88,47 @@ end
 -- }}}
 
 -- Recipes {{{
+-- This function is horrible but ok
 local function loadRecipes()
     printToMonitor("[ ] Loading recipes")
 
     local recipes = {}
     local drives = findDrivesWithRecipes()
 
+    -- Load from all drives that have a recipes directory
     for name, drive in pairs(drives) do
         local path = fs.combine(drive.getMountPath(), "recipes")
         local handlers = fs.list(path)
 
+        -- Load all handlers from each drive
         for _, handler in ipairs(handlers) do
-            if not fs.isDir(handler) then
-                printToMonitor("    Skipping non-directory " .. handler .. " in " .. path)
-                goto continue
-            end
+            if fs.isDir(handler) then
+                local namespaces = fs.list(fs.combine(path, handler))
 
-            local namespaces = fs.list(fs.combine(path, handler))
+                -- Load all namespaces for each handler
+                for _, namespace in ipairs(namespaces) do
+                    if fs.isDir(namespace) then
+                        local files = fs.list(fs.combine(path, handler, namespace))
 
-            for _, namespace in ipairs(namespaces) do
-                if not fs.isDir(namespace) then
-                    printToMonitor("    Skipping non-directory " .. namespace .. " in " .. path .. "/" .. handler)
-                    goto continue2
-                end
+                        -- Load all recipes for each namespace
+                        for _, file in ipairs(files) do
+                            local name = file:match("(.+).lua")
+                            if name then
+                                recipes[name] = dofile(fs.combine(path, handler, namespace, file))
 
-                local files = fs.list(fs.combine(path, handler, namespace))
-
-                for _, file in ipairs(files) do
-                    local name = file:match("(.+).lua")
-                    if name then
-                        recipes[name] = dofile(fs.combine(path, handler, namespace, file))
-                        recipes[name].name = namespace .. ":" .. name
-                        recipes[name].handler = handler
-                        printToMonitor("    Loaded recipe " .. name)
+                                -- Attaching this data here allows us to avoid writing it in the recipes themselves, saving space
+                                recipes[name].name = namespace .. ":" .. name
+                                recipes[name].handler = handler
+                                printToMonitor("    Loaded recipe " .. name)
+                            end
+                        end
+                    else
+                        printToMonitor("    Skipping non-directory " .. namespace .. " in " .. path .. "/" .. handler)
                     end
                 end
-
-                ::continue2::
+            else
+                printToMonitor("    Skipping non-directory " .. handler .. " in " .. path)
             end
-
-            ::continue::
         end
     end
 
