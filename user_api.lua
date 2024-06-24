@@ -12,7 +12,7 @@ local function run()
         local command = lib.split(message, " ")
 
         if command[1] == "craft" then
-            List.pushright(calc_queue, command[2])
+            List.pushright(CalcQueue, command[2])
         end
     end
 end

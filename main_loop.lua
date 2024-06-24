@@ -1,6 +1,6 @@
 local lib = require("lib")
 
-local calc_queue = List.new()
+CalcQueue = List.new()
 local craft = {}
 
 local function calc(item, quant)
@@ -33,7 +33,7 @@ end
 
 local function start()
     while true do
-        local item = List.popleft(calc_queue)
+        local item = List.popleft(CalcQueue)
         if item then
             calc(item)
         end
