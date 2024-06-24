@@ -95,6 +95,7 @@ local function loadRecipes()
     printToMonitor("[ ] Loading recipes")
 
     local recipes = {}
+    local num_recipes = 0
     local drives = findDrivesWithRecipes()
 
     -- Load from all drives that have a recipes directory
@@ -123,6 +124,8 @@ local function loadRecipes()
                                 -- Attaching this data here allows us to avoid writing it in the recipes themselves, saving space
                                 recipes[name].name = namespace .. ":" .. name
                                 recipes[name].handler = handler
+                                num_recipes = num_recipes + 1
+
                                 printToMonitor("    Loaded recipe " .. name)
                             end
                         end
@@ -136,7 +139,7 @@ local function loadRecipes()
         end
     end
 
-    printToMonitor("[x] Loaded recipes")
+    printToMonitor("[x] Loaded " .. num_recipes .. " recipes")
 
     return recipes
 end
