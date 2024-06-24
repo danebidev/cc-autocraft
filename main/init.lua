@@ -100,13 +100,13 @@ local function loadRecipes()
     -- Load from all drives that have a recipes directory
     for _, drive in ipairs(drives) do
         --- @cast drive ccTweaked.peripherals.Drive
-        printToMonitor("Loading recipes from drive " .. drive.getID())
+        printToMonitor("Loading recipes from drive " .. drive.getDiskID())
         local path = fs.combine(drive.getMountPath(), "recipes")
         local handlers = fs.list(path)
 
         -- Load all handlers from each drive
-        for _, handler in ipairs(fs.combine(path, handlers)) do
-            if fs.isDir(handler) then
+        for _, handler in ipairs(handlers) do
+            if fs.isDir(fs.combine(path, handler)) then
                 local namespaces = fs.list(fs.combine(path, handler))
 
                 -- Load all namespaces for each handler
