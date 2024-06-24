@@ -1,3 +1,4 @@
+Root = fs.combine(shell.getRunningProgram(), "../")
 local lib = dofile(fs.combine(Root, "lib.lua"))
 
 peripheral.find("modem", rednet.open)
