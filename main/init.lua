@@ -121,4 +121,4 @@ Data = {}
 Data.handlers = findRecipeHandlers()
 Data.recipes = loadRecipes()
 
-parallel.waitForAll(require("user_api").run)
+parallel.waitForAll(dofile(fs.combine(Root, "main/user_api.lua")).run)
