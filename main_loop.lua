@@ -24,10 +24,14 @@ local function calc(item, quant)
 
     lib.printToMonitor("Crafting " .. to_craft .. " x " .. recipe.qnt .. " of " .. item .. " (" .. recipe.handler .. ")")
 
-    recipe = recipe.rc
-
-    for _, item in ipairs(recipe) do
-        calc(item, to_craft)
+    for _, item in ipairs(recipe.rc) do
+        if not item == "" then
+            if not string.find(item, ":") then
+                List.pushright(CalcQueue, { name = recipe.namespace .. ":" .. item, quant = to_craft })
+            else
+                List.pushright(CalcQueue, { name = item, quant = to_craft })
+            end
+        end
     end
 end
 

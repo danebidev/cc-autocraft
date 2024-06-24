@@ -94,6 +94,7 @@ local function loadRecipes()
                                 -- Attaching this data here allows us to avoid writing it in the recipes themselves, saving space
                                 recipes[name].name = name
                                 recipes[name].handler = handler
+                                recipes[name].namespace = namespace
                                 num_recipes = num_recipes + 1
 
                                 lib.printToMonitor("    Loaded recipe " .. name)
