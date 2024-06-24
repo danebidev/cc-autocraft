@@ -1,4 +1,7 @@
 -- Setup {{{
+Root = fs.combine(shell.getRunningProgram(), "../../")
+local lib = dofile(fs.combine(Root, "lib.lua"))
+
 local monitor = peripheral.find("monitor") --[[@as ccTweaked.peripherals.Monitor]]
 
 if not monitor then
@@ -8,53 +11,31 @@ end
 monitor.clear()
 monitor.setCursorPos(1, 1)
 
-local root = fs.combine(shell.getRunningProgram(), "../../")
+Lines = {}
 
-local lines = {}
 
-local function printToMonitor(text)
-    print(text)
-
-    if not monitor then
-        return
-    end
-
-    table.insert(lines, text)
-
-    if #lines > monitor.getSize() - 1 then
-        table.remove(lines, 1)
-    end
-
-    monitor.clear()
-    monitor.setCursorPos(1, 1)
-    for i, line in ipairs(lines) do
-        monitor.setCursorPos(1, i)
-        monitor.write(line)
-    end
-end
-
-printToMonitor("[ ] Loading main.lua")
+lib.printToMonitor("[ ] Loading main.lua", monitor)
 -- }}}
 
 -- Recipe handlers {{{
 local function findRecipeHandlers()
-    printToMonitor("[ ] Finding recipe handlers")
+    lib.printToMonitor("[ ] Finding recipe handlers", monitor)
 
     local handlers = {}
     local num_handlers = 0
 
-    local files = fs.list(fs.combine(root, "recipe_handlers"))
+    local files = fs.list(fs.combine(Root, "recipe_handlers"))
 
     for _, file in ipairs(files) do
         local name = file:match("(.+).lua")
         if name then
             num_handlers = num_handlers + 1
-            printToMonitor('    Found handler "' .. name .. '"')
-            handlers[name] = dofile(fs.combine(root, "recipe_handlers", file))
+            lib.printToMonitor('    Found handler "' .. name .. '"', monitor)
+            handlers[name] = dofile(fs.combine(Root, "recipe_handlers", file))
         end
     end
 
-    printToMonitor("[x] Found " .. num_handlers .. " recipe handlers")
+    lib.printToMonitor("[x] Found " .. num_handlers .. " recipe handlers", monitor)
 
     return handlers
 end
@@ -63,7 +44,7 @@ end
 
 -- Drives {{{
 local function findDrivesWithRecipes()
-    printToMonitor("[ ] Finding drives with recipes")
+    lib.printToMonitor("[ ] Finding drives with recipes", monitor)
 
     local num_drives = 0
 
@@ -73,17 +54,17 @@ local function findDrivesWithRecipes()
                 return false
             end
 
-            printToMonitor("    Found drive " .. name .. " with recipes")
+            lib.printToMonitor("    Found drive " .. name .. " with recipes", monitor)
             num_drives = num_drives + 1
             return true
         end)
     }
 
     if not drives then
-        printToMonitor("[x] No drives found with recipes")
+        lib.printToMonitor("[x] No drives found with recipes", monitor)
         return {}
     else
-        printToMonitor("[x] Found " .. num_drives .. " drives with recipes")
+        lib.printToMonitor("[x] Found " .. num_drives .. " drives with recipes", monitor)
         return drives
     end
 end
@@ -92,7 +73,7 @@ end
 -- Recipes {{{
 -- This function is horrible but ok
 local function loadRecipes()
-    printToMonitor("[ ] Loading recipes")
+    lib.printToMonitor("[ ] Loading recipes", monitor)
 
     local recipes = {}
     local num_recipes = 0
@@ -101,7 +82,7 @@ local function loadRecipes()
     -- Load from all drives that have a recipes directory
     for _, drive in ipairs(drives) do
         --- @cast drive ccTweaked.peripherals.Drive
-        printToMonitor("Loading recipes from drive " .. drive.getDiskID())
+        lib.printToMonitor("    Loading recipes from drive " .. drive.getDiskID(), monitor)
         local path = fs.combine(drive.getMountPath(), "recipes")
         local handlers = fs.list(path)
 
@@ -126,43 +107,30 @@ local function loadRecipes()
                                 recipes[name].handler = handler
                                 num_recipes = num_recipes + 1
 
-                                printToMonitor("    Loaded recipe " .. name)
+                                lib.printToMonitor("    Loaded recipe " .. name, monitor)
                             end
                         end
                     else
-                        printToMonitor("    Skipping non-directory " .. namespace .. " in " .. path .. "/" .. handler)
+                        lib.printToMonitor(
+                        "    Skipping non-directory " .. namespace .. " in " .. path .. "/" .. handler, monitor)
                     end
                 end
             else
-                printToMonitor("    Skipping non-directory " .. handler .. " in " .. path)
+                lib.printToMonitor("    Skipping non-directory " .. handler .. " in " .. path, monitor)
             end
         end
     end
 
-    printToMonitor("[x] Loaded " .. num_recipes .. " recipes")
+    lib.printToMonitor("[x] Loaded " .. num_recipes .. " recipes", monitor)
 
     return recipes
 end
 -- }}}
 
-local crafting_calc = dofile(fs.combine(root, "main/crafting_calc.lua"))
+local crafting_calc = require("crafting_calc")
 
 Data = {}
 Data.handlers = findRecipeHandlers()
 Data.recipes = loadRecipes()
 
--- Rednet user interface {{{
-local function user_interface()
-    printToMonitor("[ ] Starting user interface")
-
-    peripheral.find("modem", rednet.open)
-
-    while true do
-        local sender, message, protocol = rednet.receive("input")
-
-        printToMonitor("Received recipe request from " .. sender)
-    end
-end
--- }}}
-
-parallel.waitForAll(user_interface)
+parallel.waitForAll(require("user_api").run)
