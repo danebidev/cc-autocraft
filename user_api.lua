@@ -11,12 +11,8 @@ local function run()
 
         local command = lib.split(message, " ")
 
-        if command[1] == "get_raw" then
-            if not Data.recipes[command[2]] then
-                rednet.send(sender, "Recipe not found", "autocrafting")
-            else
-                rednet.send(sender, textutils.serialize(Data.recipes[command[2]]), "autocrafting")
-            end
+        if command[1] == "craft" then
+            List.pushright(calc_queue, command[2])
         end
     end
 end
