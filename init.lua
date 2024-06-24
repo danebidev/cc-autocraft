@@ -1,5 +1,5 @@
 -- Setup {{{
-local root = fs.getDir(fs.combine(shell.getRunningProgram(), ".."))
+local root = fs.getDir(fs.combine(shell.getRunningProgram()))
 local lib = require("lib")
 
 lib.printToMonitor("[ ] Loading init.lua")
