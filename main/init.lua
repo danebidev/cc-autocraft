@@ -1,6 +1,6 @@
 -- Setup {{{
-Root = fs.combine(shell.getRunningProgram(), "../../")
-local lib = dofile(fs.combine(Root, "lib.lua"))
+local root = fs.combine(shell.getRunningProgram(), "../../")
+local lib = dofile(fs.combine(root, "lib.lua"))
 
 lib.printToMonitor("[ ] Loading main.lua")
 -- }}}
@@ -12,14 +12,14 @@ local function findRecipeHandlers()
     local handlers = {}
     local num_handlers = 0
 
-    local files = fs.list(fs.combine(Root, "recipe_handlers"))
+    local files = fs.list(fs.combine(root, "recipe_handlers"))
 
     for _, file in ipairs(files) do
         local name = file:match("(.+).lua")
         if name then
             num_handlers = num_handlers + 1
             lib.printToMonitor('    Found handler "' .. name .. '"')
-            handlers[name] = dofile(fs.combine(Root, "recipe_handlers", file))
+            handlers[name] = dofile(fs.combine(root, "recipe_handlers", file))
         end
     end
 
@@ -121,4 +121,4 @@ Data = {}
 Data.handlers = findRecipeHandlers()
 Data.recipes = loadRecipes()
 
-parallel.waitForAll(dofile(fs.combine(Root, "main/user_api.lua")).run)
+parallel.waitForAll(dofile(fs.combine(root, "main/user_api.lua")).run)

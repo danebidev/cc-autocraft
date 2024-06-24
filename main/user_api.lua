@@ -1,3 +1,4 @@
+local root = fs.combine(shell.getRunningProgram(), "../../")
 local lib = dofile(fs.combine(Root, "lib.lua"))
 
 local function run()
