@@ -12,4 +12,7 @@ while true do
     end
 
     rednet.broadcast(command)
+
+    local _, message = rednet.receive()
+    print(message)
 end
